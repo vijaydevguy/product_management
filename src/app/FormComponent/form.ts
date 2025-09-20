@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AuthService } from '../auth/service';
 
 import {
   gmailValidator,
@@ -35,7 +36,14 @@ export class FormComponent {
   //Reactive form A FormGroup is a collection of FormControls that track the value and validation status of a group of inputs.
 
   //we will use like in ui to bind formControlName ="email" like wise it will bind
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+
+    //we are injecting services
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, gmailValidator()]],
       password: ['', [Validators.required, strongPasswordValidator()]],
@@ -62,7 +70,7 @@ export class FormComponent {
 
       this.form.get('confirmPassword')?.updateValueAndValidity();
       this.form.get('name')?.updateValueAndValidity();
-      
+
       // Reset the form when mode changes
       this.form.reset();
     });
@@ -79,10 +87,26 @@ export class FormComponent {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
+    //we will use to test data's sending properly or not
     if (this.mode === 'signin') {
       console.log('Sign In Data:', this.form.value);
     } else {
       console.log('Sign Up Data:', this.form.value);
+    }
+
+    // destructuring values
+    const { email, password } = this.form.value;
+
+    if (this.mode === 'signin') {
+      this.authService
+        .signIn(email, password)
+        .then(() => this.router.navigate(['/products']))
+        .catch((err) => console.error(err));
+    } else {
+      this.authService
+        .signUp(email, password)
+        .then(() => this.router.navigate(['/products']))
+        .catch((err) => console.error(err));
     }
   }
 }
