@@ -1,0 +1,122 @@
+<!-- here we will do ui stuffs only -->
+
+<div
+  class="container vh-100 d-flex justify-content-center align-items-center w-250"
+>
+  <div class="row w-100">
+    <div class="col-md-6 offset-md-3">
+      <div class="card bg-gradient-to-tr from-[#000000] to-[#ffffff]">
+        <div class="card-body">
+          <h3 class="text-center mb-4" *ngIf="mode === 'signin'">Sign In</h3>
+          <h3 class="text-center mb-4" *ngIf="mode === 'signup'">Sign Up</h3>
+
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <!-- Name (signup only) -->
+            <div class="mb-3" *ngIf="mode === 'signup'">
+              <label class="form-label">Name*</label>
+              <input
+                type="text"
+                formControlName="name"
+                class="form-control"
+                [ngClass]="{'is-invalid': form.get('name')?.touched && form.get('name')?.invalid}"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="hasError('name', 'required')"
+              >
+                Name is required.
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">Email*</label>
+              <input
+                type="email"
+                formControlName="email"
+                class="form-control"
+                [ngClass]="{'is-invalid': hasError('email','required') || hasError('email','gmail')}"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="hasError('email','required')"
+              >
+                Email is required.
+              </div>
+              <div class="invalid-feedback" *ngIf="hasError('email','gmail')">
+                Email must end with &#64;gmail.com
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label class="form-label">Password*</label>
+              <input
+                type="password"
+                formControlName="password"
+                class="form-control"
+                [ngClass]="{'is-invalid': hasError('password','required') || hasError('password','strongPassword')}"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="hasError('password','required')"
+              >
+                Password is required.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="hasError('password','strongPassword')"
+              >
+                Must contain uppercase, lowercase, special char, min 6 length
+              </div>
+            </div>
+
+            <!-- Confirm Password (signup only) -->
+            <div class="mb-3" *ngIf="mode === 'signup'">
+              <label class="form-label">Confirm Password*</label>
+              <input
+                type="password"
+                formControlName="confirmPassword"
+                class="form-control"
+                [ngClass]="{'is-invalid': form.value.password !== form.value.confirmPassword && form.get('confirmPassword')?.touched}"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="form.value.password !== form.value.confirmPassword && form.get('confirmPassword')?.touched"
+              >
+                Passwords do not match
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="d-grid">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="form.invalid"
+              >
+                {{ mode === 'signin' ? 'Sign In' : 'Sign Up' }}
+              </button>
+            </div>
+          </form>
+
+          <!-- Toggle between signin/signup -->
+          <div class="text-center mt-3">
+            <small *ngIf="mode === 'signin'">
+              Don’t have an account?
+              <a routerLink="/signup" class="underline cursor-pointer"
+                >Sign Up</a
+              >
+            </small>
+            <small *ngIf="mode === 'signup'">
+              Already have an account?
+              <a routerLink="/signin" class="underline cursor-pointer"
+                >Sign In</a
+              >
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
