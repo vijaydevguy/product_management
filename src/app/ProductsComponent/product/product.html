@@ -101,7 +101,12 @@
                 class="form-control"
                 (change)="onFileSelected($event)"
               />
-              <div class="text-danger small">Product image is required</div>
+              <div
+                *ngIf="productForm.get('link')?.touched && productForm.get('link')?.invalid"
+                class="text-danger small"
+              >
+                Product image is required
+              </div>
               <div *ngIf="imagePreview" class="mt-2">
                 <img [src]="imagePreview" class="img-thumbnail" width="100" />
               </div>

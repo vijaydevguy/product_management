@@ -45,7 +45,9 @@ export class ProductModalComponent {
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
       isActive: [true],
-      link: [null],
+      // this is will throw an error so we are resolving
+      // link: [null],
+      link: [null, this.mode === 'add' ? Validators.required : []],
     });
   }
 
@@ -76,6 +78,10 @@ export class ProductModalComponent {
       // show existing image as preview (if any)
       this.imagePreview = this.product.link ?? null;
       // don't force file to be required in edit mode (keep existing image if user doesn't upload new)
+
+      // remove required validator in edit mode
+      this.productForm.get('link')?.clearValidators();
+      this.productForm.get('link')?.updateValueAndValidity();
     }
 
     // When switching to add mode, reset
@@ -83,6 +89,10 @@ export class ProductModalComponent {
       this.productForm.reset({ isActive: true });
       this.imagePreview = null;
       this.file = null;
+
+      // here are handling validators
+      this.productForm.get('link')?.setValidators([Validators.required]);
+      this.productForm.get('link')?.updateValueAndValidity();
     }
   }
 
