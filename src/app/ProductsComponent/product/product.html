@@ -1,59 +1,125 @@
 <!-- product-modal.component.html -->
-<div class="modal fade show d-block" tabindex="-1" *ngIf="isOpen" style="z-index: 1050;">
+<div
+  class="modal fade show d-block"
+  tabindex="-1"
+  *ngIf="isOpen"
+  style="z-index: 1050"
+>
   <!-- Backdrop click closes modal -->
-  <div class="modal-backdrop fade show" (click)="close()" style="z-index: 1040;"></div>
+  <div
+    class="modal-backdrop fade show"
+    (click)="close()"
+    style="z-index: 1040"
+  ></div>
 
   <!-- body -->
-  <div class="modal-dialog modal-lg modal-dialog-centered" style="z-index: 1055;">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered"
+    style="z-index: 1055"
+  >
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Product</h5>
+        <h5 class="modal-title">
+          {{ mode === 'add' ? 'Add Product' : mode === 'edit' ? 'Edit Product' :
+          'Product Details' }}
+        </h5>
         <button type="button" class="btn-close" (click)="close()"></button>
       </div>
 
       <div class="modal-body">
-        <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <!-- VIEW MODE -->
+        <div *ngIf="mode === 'view'; else editForm">
           <div class="mb-3">
-            <label class="form-label">Product Name</label>
-            <input type="text" formControlName="name" class="form-control" />
+            <label class="fw-bold">Product Name:</label>
+            <div>{{ product?.name }}</div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Description</label>
-            <textarea
-              formControlName="description"
-              class="form-control"
-            ></textarea>
+            <label class="fw-bold">Description:</label>
+            <div>{{ product?.description }}</div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Product Image</label>
-            <input
-              type="file"
-              class="form-control"
-              (change)="onFileSelected($event)"
-            />
-            <div *ngIf="imagePreview" class="mt-2">
+            <label class="fw-bold">Product Image:</label>
+            <div *ngIf="product?.link; else grayBox">
               <img
-                [src]="imagePreview"
-                alt="Preview"
+                [src]="product?.link"
+                alt="Product Image"
                 class="img-thumbnail"
                 width="100"
               />
             </div>
+            <ng-template #grayBox>
+              <div
+                style="
+                  width: 100px;
+                  height: 100px;
+                  background: #e0e0e0;
+                  border-radius: 4px;
+                "
+              ></div>
+            </ng-template>
           </div>
 
-          <div class="form-check form-switch mb-3">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              formControlName="isActive"
-            />
-            <label class="form-check-label">Active</label>
+          <div class="mb-3">
+            <label class="fw-bold">Status:</label>
+            <div>{{ product?.isActive ? 'Active' : 'Inactive' }}</div>
           </div>
+        </div>
 
-          <button class="btn btn-primary" type="submit">Save</button>
-        </form>
+        <!-- ADD/EDIT MODE -->
+        <ng-template #editForm>
+          <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label class="form-label">Product Name</label>
+              <input type="text" formControlName="name" class="form-control" />
+              <div
+                class="text-danger small"
+                *ngIf="productForm.get('name')?.touched && productForm.get('name')?.invalid"
+              >
+                Product Name is required
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea
+                formControlName="description"
+                class="form-control"
+              ></textarea>
+              <div
+                class="text-danger small"
+                *ngIf="productForm.get('description')?.touched && productForm.get('description')?.invalid"
+              >
+                Description is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Product Image</label>
+              <input
+                type="file"
+                class="form-control"
+                (change)="onFileSelected($event)"
+              />
+              <div class="text-danger small">Product image is required</div>
+              <div *ngIf="imagePreview" class="mt-2">
+                <img [src]="imagePreview" class="img-thumbnail" width="100" />
+              </div>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                formControlName="isActive"
+              />
+              <label class="form-check-label">Active</label>
+            </div>
+            <button class="btn btn-primary" type="submit">
+              {{ mode === 'add' ? 'Save' : 'Update' }}
+            </button>
+          </form>
+        </ng-template>
       </div>
     </div>
   </div>

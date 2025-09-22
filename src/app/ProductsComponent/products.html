@@ -4,7 +4,7 @@
 
     <button
       class="btn btn-outline-info d-flex align-items-center"
-      (click)="openModal()"
+      (click)="openModal('add')"
     >
       <i class="bi bi-plus-lg me-2"></i>
       Add Product
@@ -34,24 +34,46 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th>Product</th>
-          <th>Description</th>
-          <th>Image</th>
-          <th>Link</th>
-          <th>Status</th>
+        <tr *ngFor="let p of products">
+          <th>{{ p.name }}</th>
+          <th>{{p.description}}</th>
+          <!-- <th>Image {{p.link}}</th> -->
           <th>
-            <button class="btn me-2">
+            <ng-container *ngIf="p.link; else noImage">
+              <img
+                [src]="p.link"
+                alt="Product Image"
+                class="img-thumbnail"
+                style="width: 120px; height: 60px; object-fit: cover"
+              />
+            </ng-container>
+
+            <ng-template #noImage>
+              <div
+                style="
+                  width: 120px;
+                  height: 60px;
+                  background-color: #e0e0e0;
+                  border-radius: 4px;
+                "
+              ></div>
+            </ng-template>
+          </th>
+
+          <th>{{p.link}} <a href="{{p.link}}">link</a></th>
+          <th>{{p.isActive ? "Active": "InActive"}}</th>
+          <th>
+            <button class="btn me-2" (click)="openModal('view', p)">
               <i class="bi bi-eye"></i>
             </button>
           </th>
           <th>
-            <button class="btn me-2">
+            <button class="btn me-2" (click)="openModal('edit', p)">
               <i class="bi bi-pen"></i>
             </button>
           </th>
           <th>
-            <button class="btn me-2">
+            <button class="btn me-2" (click)="deleteProduct(p)">
               <i class="bi bi-trash"></i>
             </button>
           </th>
@@ -62,7 +84,10 @@
 </div>
 
 <!-- Product Modal -->
+<!-- we are sending mode of the form through this we will reuse -->
 <app-product-modal
   [isOpen]="isModalOpen"
   (closed)="closeModal()"
+  [mode]="modalMode"
+  [product]="selectedProduct"
 ></app-product-modal>

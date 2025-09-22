@@ -9,4 +9,9 @@ export const environment = {
     messagingSenderId: '788959569677',
     appId: '1:788959569677:web:2e4aea731b2d476f777244',
   },
+
+  cloudinary: {
+    cloudName: 'dnxx5vmrs',
+    uploadPreset: 'upload_preset',
+  },
 };

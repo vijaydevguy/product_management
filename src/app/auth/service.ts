@@ -26,7 +26,9 @@ export class AuthService {
     return createUserWithEmailAndPassword(this.auth, email, password);
   }
 
-  signOut() {
-    return this.auth.signOut().then(() => this.router.navigate(['/signin']));
+  async signOut() {
+    return await this.auth
+      .signOut()
+      .then(() => this.router.navigate(['/signin']));
   }
 }
