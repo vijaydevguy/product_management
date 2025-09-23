@@ -118,7 +118,13 @@ export class ProductModalComponent {
 
   // throught this onSubmit function we are handling add and edit
   async onSubmit() {
+    // if this will work when too many attempt to click button it will executed
+    if (this.uploading) return; // prevent double clicks
+
     if (this.productForm.valid) {
+      // after all validation we are starting loading flag true
+      this.uploading = true;
+
       const formData = this.productForm.value;
 
       // storing imageUrl that will came form cloudinary
@@ -168,6 +174,9 @@ export class ProductModalComponent {
         this.close();
       } catch (error) {
         console.error('Error saving product:', error);
+      } finally {
+        // if it is error or on success we are enable to button to do action
+        this.uploading = false;
       }
     } else {
       this.productForm.markAllAsTouched();
