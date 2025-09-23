@@ -61,6 +61,10 @@ export class ProductModalComponent {
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
+
+        // if file changed we are updating validation errors
+        this.productForm.get('link')?.setValue(this.imagePreview);
+        this.productForm.get('link')?.updateValueAndValidity();
       };
       reader.readAsDataURL(file);
     }
